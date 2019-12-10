@@ -1,43 +1,38 @@
-distortos [![Build Status](https://travis-ci.org/DISTORTEC/distortos.svg)](https://travis-ci.org/DISTORTEC/distortos)
+plusrtos 
 =========
 
 object-oriented C++ RTOS for microcontrollers
 
-[Homepage](http://distortos.org/)<br/>
-[Documentation](http://distortos.org/documentation/)<br/>
-[Source Code @ GitHub](https://github.com/DISTORTEC/distortos)<br/>
-[Forum](https://groups.google.com/d/forum/distortos)<br/>
-
 Configuration & building
 ------------------------
 
-To configure & build *distortos* you need:
+To configure & build *plusrtos* you need:
 - [CMake](https://cmake.org/) (version 3.8 or later);
 - [a build tool supported by CMake](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html#manual:cmake-generators(7)) -
 it is highly recommended to use [Ninja](https://ninja-build.org/);
 - [arm-none-eabi bleeding-edge-toolchain](https://github.com/FreddieChopin/bleeding-edge-toolchain) (*GCC* version 5 or
 later);
 
-*distortos* tries to follow typical *CMake* cross-compiling workflow, which means that you always have to use a
-so-called *toolchain file*. Toolchain files in *distortos* also serve another purpose - they select the board which is
+*plusrtos* tries to follow typical *CMake* cross-compiling workflow, which means that you always have to use a
+so-called *toolchain file*. Toolchain files in *plusrtos* also serve another purpose - they select the board which is
 going to be used by your application.
 
-1. Download source package of *distortos* in [zip](https://github.com/DISTORTEC/distortos/archive/master.zip) or
-[tar.gz](https://github.com/DISTORTEC/distortos/archive/master.tar.gz) format and extract it;
+1. Download source package of *plusrtos* in [zip](https://github.com/nkkkkhil/plusrtos/archive/master.zip) or
+[tar.gz](https://github.com/nikkkkhil/plusrtos/archive/master.tar.gz) format and extract it;
 2. Create a build folder, for example `output`;
 3. From within the build folder, initialize it with *CMake*, for example with
 `cmake .. -DCMAKE_TOOLCHAIN_FILE=../source/board/ST_STM32F4DISCOVERY/Toolchain-ST_STM32F4DISCOVERY.cmake -GNinja` if you
 want a default configuration or
-`cmake -C../configurations/ST_STM32F4DISCOVERY/test/distortosConfiguration.cmake .. -GNinja` if you want to start from a
+`cmake -C../configurations/ST_STM32F4DISCOVERY/test/plusrtosConfiguration.cmake .. -GNinja` if you want to start from a
 saved configuration;
-4. Edit *distortos* configuration with a tool of your choice, for example `cmake-gui ..` (a GUI application) or
+4. Edit *plusrtos* configuration with a tool of your choice, for example `cmake-gui ..` (a GUI application) or
 `ccmake ..` (*curses*-based application);
 5. Execute selected build tool, for example `ninja` or `ninja -v` if you want to see all command lines while building;
 
-You can obviously replace step 1 with `git clone https://github.com/DISTORTEC/distortos`.
+You can obviously replace step 1 with `git clone https://github.com/nikkkkhil/plusrtos`.
 
 Steps 2-4 can be all done from within `cmake-gui`. After starting the application use *Browse Source...* button to
-select the folder with *distortos* and *Browse Build...* button to select the build folder. Then click on *Configure*
+select the folder with *plusrtos* and *Browse Build...* button to select the build folder. Then click on *Configure*
 button. In the *CMakeSetup* window which appears select the generator of your choice and make sure that
 *Specify toolchain file for cross-compiling* is selected before going any further. Click *Next* and specify the
 toolchain file (which also selects the board), for example
@@ -45,14 +40,14 @@ toolchain file (which also selects the board), for example
 
 ### Test application
 
-The default target of build - *all* - is just the static library with *distortos* `libdistortos.a`. If you want to build
-the test application, specify `distortosTest` as the target (for example `ninja distortosTest` if you use *Ninja*).
+The default target of build - *all* - is just the static library with *plusrtos* `libplusrtos.a`. If you want to build
+the test application, specify `plusrtosTest` as the target (for example `ninja plusrtosTest` if you use *Ninja*).
 
 ### tl;dr
 
-    $ wget https://github.com/DISTORTEC/distortos/archive/master.tar.gz
+    $ wget https://github.com/nikkkkhil/plusrtos/archive/master.tar.gz
     $ tar -xf master.tar.gz
-    $ cd distortos-master
+    $ cd plusrtos-master
     $ mkdir output
     $ cd output
     $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../source/board/ST_STM32F4DISCOVERY/Toolchain-ST_STM32F4DISCOVERY.cmake -GNinja
@@ -61,12 +56,12 @@ the test application, specify `distortosTest` as the target (for example `ninja 
 
 or
 
-    $ wget https://github.com/DISTORTEC/distortos/archive/master.tar.gz
+    $ wget https://github.com/nikkkkhil/plusrtos/archive/master.tar.gz
     $ tar -xf master.tar.gz
-    $ cd distortos-master
+    $ cd plusrtos-master
     $ mkdir output
     $ cd output
-    $ cmake -C../configurations/ST_STM32F4DISCOVERY/test/distortosConfiguration.cmake .. -GNinja
+    $ cmake -C../configurations/ST_STM32F4DISCOVERY/test/plusrtosConfiguration.cmake .. -GNinja
     $ cmake-gui ..
     $ ninja
 
@@ -92,9 +87,9 @@ To get an idea about the format of the board YAML files, take a look at some of 
 `source/chip/STM32/STM32F4/chipYaml/ST_STM32F407VG.yaml` - which describes *STM32F407VG* chip used on this board. There
 is also some documentation about YAML bindings in `documentation/yaml-bindings`
 
-Assuming that you already have *distortos* either as part of your project or as a standalone folder, the basic
-invocation of the board generator is just `path/to/distortos/scripts/generateBoard.py path/to/board.yaml` (or
-`python path/to/distortos/scripts/generateBoard.py path/to/board.yaml` on *Windows*), for example
+Assuming that you already have *plusrtos* either as part of your project or as a standalone folder, the basic
+invocation of the board generator is just `path/to/plusrtos/scripts/generateBoard.py path/to/board.yaml` (or
+`python path/to/plusrtos/scripts/generateBoard.py path/to/board.yaml` on *Windows*), for example
 `./scripts/generateBoard.py source/board/ST_STM32F4DISCOVERY/ST_STM32F4DISCOVERY.yaml`. You may also generate so-called
 *raw-boards*, using chip YAML file as the input directly, for example
 `./scripts/generateBoard.py source/chip/STM32/STM32F4/chipYaml/ST_STM32F407VG.yaml -o output/path/of/raw/board`.
