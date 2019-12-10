@@ -1,0 +1,270 @@
+#
+# file: ST_STM32L072VZ.yaml
+#
+# author: Copyright (C) 2019 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+# distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Automatically generated file - do not edit!
+#
+
+chip:
+  compatible:
+  - ST,STM32L072VZ
+  - ST,STM32L0
+  - ST,STM32
+CPUs:
+  0:
+    compatible:
+    - ARM,Cortex-M0+
+    - ARM,ARMv6-M
+    revision: r0p1
+NVIC:
+  compatible:
+  - ARM,NVIC
+  - interrupt-controller
+  core-vectors:
+  - name: Reset
+  - name: NMI
+  - name: HardFault
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - name: SVC
+  - 
+  - 
+  - name: PendSV
+  - name: SysTick
+  chip-vectors:
+  - name: WWDG
+  - name: PVD
+  - name: RTC
+  - name: FLASH
+  - name: RCC_CRS
+  - name: EXTI0_1
+  - name: EXTI2_3
+  - name: EXTI4_15
+  - name: TSC
+  - name: DMA1_Channel1
+  - name: DMA1_Channel2_3
+    subvectors:
+    - DMA1_Channel2
+    - DMA1_Channel3
+  - name: DMA1_Channel4_5_6_7
+    subvectors:
+    - DMA1_Channel4
+    - DMA1_Channel5
+    - DMA1_Channel6
+    - DMA1_Channel7
+  - name: ADC1_COMP
+  - name: LPTIM1
+  - name: USART4_5
+    subvectors:
+    - USART4
+    - USART5
+  - name: TIM2
+  - name: TIM3
+  - name: TIM6_DAC
+  - name: TIM7
+  - 
+  - name: TIM21
+  - name: I2C3
+  - name: TIM22
+  - name: I2C1
+  - name: I2C2
+  - name: SPI1
+  - name: SPI2
+  - name: USART1
+  - name: USART2
+  - name: AES_RNG_LPUART1
+  - 
+  - name: USB
+  $labels:
+  - NVIC
+clocks:
+  HSE:
+    compatible:
+    - ST,STM32-HSE
+    - fixed-clock
+    frequency: 0
+    bypass: false
+    $labels:
+    - HSE
+memories:
+  flash:
+    compatible:
+    - on-chip-flash
+    address: 134217728
+    size: 196608
+    $labels:
+    - flash
+  SRAM:
+    compatible:
+    - on-chip-RAM
+    address: 536870912
+    size: 20480
+    $labels:
+    - SRAM
+  EEPROM:
+    compatible:
+    - on-chip-EEPROM
+    address: 134742016
+    size: 6144
+    $labels:
+    - EEPROM
+device-electronic-signature:
+  compatible:
+  - ST,STM32-device-electronic-signature
+  unique-device-ID:
+    fragmented: true
+DMAs:
+  compatible:
+  - ST,STM32-DMAs-v1-group
+  DMA1:
+    compatible:
+    - ST,STM32-DMA-v1
+    interrupts:
+      controller: !Reference
+        label: NVIC
+      vectors:
+      - DMA1_Channel1
+      - DMA1_Channel2
+      - DMA1_Channel3
+      - DMA1_Channel4
+      - DMA1_Channel5
+      - DMA1_Channel6
+      - DMA1_Channel7
+    $labels:
+    - DMA1
+pin-controller:
+  compatible:
+  - ST,STM32-GPIO-v2-pin-controller
+  AF-bits: 3
+  has-high-speed: true
+GPIOs:
+  compatible:
+  - ST,STM32-GPIOs-v2-group
+  GPIOA:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOA
+  GPIOB:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOB
+  GPIOC:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOC
+  GPIOD:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOD
+  GPIOE:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOE
+  GPIOH:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOH
+SPIs:
+  compatible:
+  - ST,STM32-SPIs-v1-group
+  SPI1:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI1
+    RX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 2
+      request: 1
+    TX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 3
+      request: 1
+    $labels:
+    - SPI1
+  SPI2:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI2
+    RX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 4
+      request: 2
+    - controller: !Reference
+        label: DMA1
+      channel: 6
+      request: 2
+    TX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 5
+      request: 2
+    - controller: !Reference
+        label: DMA1
+      channel: 7
+      request: 2
+    $labels:
+    - SPI2
+UARTs:
+  compatible:
+  - ST,STM32-USARTs-v2-group
+  has-CR-M1-bit: true
+  USART1:
+    compatible:
+    - ST,STM32-USART-v2
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART1
+    $labels:
+    - USART1
+  USART2:
+    compatible:
+    - ST,STM32-USART-v2
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART2
+    $labels:
+    - USART2
+  USART4:
+    compatible:
+    - ST,STM32-USART-v2
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART4
+    $labels:
+    - USART4
+  USART5:
+    compatible:
+    - ST,STM32-USART-v2
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART5
+    $labels:
+    - USART5

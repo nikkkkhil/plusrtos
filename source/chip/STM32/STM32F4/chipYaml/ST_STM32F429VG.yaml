@@ -1,0 +1,438 @@
+#
+# file: ST_STM32F429VG.yaml
+#
+# author: Copyright (C) 2019 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+# distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Automatically generated file - do not edit!
+#
+
+chip:
+  compatible:
+  - ST,STM32F429VG
+  - ST,STM32F4
+  - ST,STM32
+CPUs:
+  0:
+    compatible:
+    - ARM,Cortex-M4
+    - ARM,ARMv7-M
+    revision: r0p1
+    FPU:
+      compatible:
+      - ARM,FPv4-SP-D16
+NVIC:
+  compatible:
+  - ARM,NVIC
+  - interrupt-controller
+  core-vectors:
+  - name: Reset
+  - name: NMI
+  - name: HardFault
+  - name: MemManage
+  - name: BusFault
+  - name: UsageFault
+  - 
+  - 
+  - 
+  - 
+  - name: SVC
+  - name: DebugMon
+  - 
+  - name: PendSV
+  - name: SysTick
+  chip-vectors:
+  - name: WWDG
+  - name: PVD
+  - name: TAMP_STAMP
+  - name: RTC_WKUP
+  - name: FLASH
+  - name: RCC
+  - name: EXTI0
+  - name: EXTI1
+  - name: EXTI2
+  - name: EXTI3
+  - name: EXTI4
+  - name: DMA1_Stream0
+  - name: DMA1_Stream1
+  - name: DMA1_Stream2
+  - name: DMA1_Stream3
+  - name: DMA1_Stream4
+  - name: DMA1_Stream5
+  - name: DMA1_Stream6
+  - name: ADC
+  - name: CAN1_TX
+  - name: CAN1_RX0
+  - name: CAN1_RX1
+  - name: CAN1_SCE
+  - name: EXTI9_5
+  - name: TIM1_BRK_TIM9
+  - name: TIM1_UP_TIM10
+  - name: TIM1_TRG_COM_TIM11
+  - name: TIM1_CC
+  - name: TIM2
+  - name: TIM3
+  - name: TIM4
+  - name: I2C1_EV
+  - name: I2C1_ER
+  - name: I2C2_EV
+  - name: I2C2_ER
+  - name: SPI1
+  - name: SPI2
+  - name: USART1
+  - name: USART2
+  - name: USART3
+  - name: EXTI15_10
+  - name: RTC_Alarm
+  - name: OTG_FS_WKUP
+  - name: TIM8_BRK_TIM12
+  - name: TIM8_UP_TIM13
+  - name: TIM8_TRG_COM_TIM14
+  - name: TIM8_CC
+  - name: DMA1_Stream7
+  - name: FSMC
+  - name: SDIO
+  - name: TIM5
+  - name: SPI3
+  - name: UART4
+  - name: UART5
+  - name: TIM6_DAC
+  - name: TIM7
+  - name: DMA2_Stream0
+  - name: DMA2_Stream1
+  - name: DMA2_Stream2
+  - name: DMA2_Stream3
+  - name: DMA2_Stream4
+  - name: ETH
+  - name: ETH_WKUP
+  - name: CAN2_TX
+  - name: CAN2_RX0
+  - name: CAN2_RX1
+  - name: CAN2_SCE
+  - name: OTG_FS
+  - name: DMA2_Stream5
+  - name: DMA2_Stream6
+  - name: DMA2_Stream7
+  - name: USART6
+  - name: I2C3_EV
+  - name: I2C3_ER
+  - name: OTG_HS_EP1_OUT
+  - name: OTG_HS_EP1_IN
+  - name: OTG_HS_WKUP
+  - name: OTG_HS
+  - name: DCMI
+  - name: CRYP
+  - name: HASH_RNG
+  - name: FPU
+  - name: UART7
+  - name: UART8
+  - name: SPI4
+  - name: SPI5
+  - name: SPI6
+  - name: SAI1
+  - name: LTDC
+  - name: LTDC_ER
+  - name: DMA2D
+  $labels:
+  - NVIC
+clocks:
+  HSE:
+    compatible:
+    - ST,STM32-HSE
+    - fixed-clock
+    frequency: 0
+    $labels:
+    - HSE
+memories:
+  flash:
+    compatible:
+    - on-chip-flash
+    address: 134217728
+    size: 1048576
+    $labels:
+    - flash
+  SRAM:
+    compatible:
+    - on-chip-RAM
+    address: 536870912
+    size: 196608
+    $labels:
+    - SRAM
+  CCM:
+    compatible:
+    - on-chip-RAM
+    address: 268435456
+    size: 65536
+    $labels:
+    - CCM
+  BKPSRAM:
+    compatible:
+    - on-chip-RAM
+    address: 1073889280
+    size: 4096
+    sections:
+    - .BKPSRAM.noinit
+    - .noinit
+    $labels:
+    - BKPSRAM
+device-electronic-signature:
+  compatible:
+  - ST,STM32-device-electronic-signature
+  unique-device-ID:
+    fragmented: false
+DMAs:
+  compatible:
+  - ST,STM32-DMAs-v2-group
+  DMA1:
+    compatible:
+    - ST,STM32-DMA-v2
+    interrupts:
+      controller: !Reference
+        label: NVIC
+      vectors:
+      - DMA1_Stream0
+      - DMA1_Stream1
+      - DMA1_Stream2
+      - DMA1_Stream3
+      - DMA1_Stream4
+      - DMA1_Stream5
+      - DMA1_Stream6
+      - DMA1_Stream7
+    $labels:
+    - DMA1
+  DMA2:
+    compatible:
+    - ST,STM32-DMA-v2
+    interrupts:
+      controller: !Reference
+        label: NVIC
+      vectors:
+      - DMA2_Stream0
+      - DMA2_Stream1
+      - DMA2_Stream2
+      - DMA2_Stream3
+      - DMA2_Stream4
+      - DMA2_Stream5
+      - DMA2_Stream6
+      - DMA2_Stream7
+    $labels:
+    - DMA2
+pin-controller:
+  compatible:
+  - ST,STM32-GPIO-v2-pin-controller
+  AF-bits: 4
+  has-high-speed: true
+GPIOs:
+  compatible:
+  - ST,STM32-GPIOs-v2-group
+  GPIOA:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOA
+  GPIOB:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOB
+  GPIOC:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOC
+  GPIOD:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOD
+  GPIOE:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOE
+  GPIOH:
+    compatible:
+    - ST,STM32-GPIO-v2
+    $labels:
+    - GPIOH
+SPIs:
+  compatible:
+  - ST,STM32-SPIs-v1-group
+  SPI1:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI1
+    RX-DMA:
+    - controller: !Reference
+        label: DMA2
+      channel: 0
+      request: 3
+    - controller: !Reference
+        label: DMA2
+      channel: 2
+      request: 3
+    TX-DMA:
+    - controller: !Reference
+        label: DMA2
+      channel: 3
+      request: 3
+    - controller: !Reference
+        label: DMA2
+      channel: 5
+      request: 3
+    $labels:
+    - SPI1
+  SPI2:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI2
+    RX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 3
+      request: 0
+    TX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 4
+      request: 0
+    $labels:
+    - SPI2
+  SPI3:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI3
+    RX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 0
+      request: 0
+    - controller: !Reference
+        label: DMA1
+      channel: 2
+      request: 0
+    TX-DMA:
+    - controller: !Reference
+        label: DMA1
+      channel: 5
+      request: 0
+    - controller: !Reference
+        label: DMA1
+      channel: 7
+      request: 0
+    $labels:
+    - SPI3
+  SPI4:
+    compatible:
+    - ST,STM32-SPI-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: SPI4
+    RX-DMA:
+    - controller: !Reference
+        label: DMA2
+      channel: 0
+      request: 4
+    - controller: !Reference
+        label: DMA2
+      channel: 3
+      request: 5
+    TX-DMA:
+    - controller: !Reference
+        label: DMA2
+      channel: 1
+      request: 4
+    - controller: !Reference
+        label: DMA2
+      channel: 4
+      request: 5
+    $labels:
+    - SPI4
+UARTs:
+  compatible:
+  - ST,STM32-USARTs-v1-group
+  has-CR1-OVER8-bit: true
+  USART1:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART1
+    $labels:
+    - USART1
+  USART2:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART2
+    $labels:
+    - USART2
+  USART3:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART3
+    $labels:
+    - USART3
+  UART4:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: UART4
+    $labels:
+    - UART4
+  UART5:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: UART5
+    $labels:
+    - UART5
+  USART6:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: USART6
+    $labels:
+    - USART6
+  UART7:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: UART7
+    $labels:
+    - UART7
+  UART8:
+    compatible:
+    - ST,STM32-USART-v1
+    interrupt:
+      controller: !Reference
+        label: NVIC
+      vector: UART8
+    $labels:
+    - UART8

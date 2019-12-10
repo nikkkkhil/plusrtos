@@ -1,0 +1,5 @@
+{% if 'ST,STM32' in dictionary['chip']['compatible'] %}
+('source/chip/STM32/boardTemplates/STM32.cmake.jinja',
+		{},
+		'cmake/80-STM32.cmake'),
+{% endif %}

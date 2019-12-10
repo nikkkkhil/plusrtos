@@ -1,0 +1,110 @@
+{% set includeGuard = outputFilename | sanitize('[^0-9A-Za-z]') | upper + '_' %}
+/**
+ * \file
+ * \brief Declaration of {{ dictionaryKey }} for {{ board }}
+ *
+ * \author Copyright (C) 2014-2019 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+ *
+ * \par License
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+ * distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * \warning
+ * Automatically generated file - do not edit!
+ */
+
+#ifndef {{ includeGuard }}
+#define {{ includeGuard }}
+
+#include "distortos/distortosConfiguration.h"
+
+#include <cstddef>
+{% for key, value in dictionary[dictionaryKey].items() if value is mapping %}
+
+#ifdef DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+#define DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLED	1
+#else	// !def DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+#define DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLED	0
+#endif	// !def DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+{%endfor%}
+
+/// count of {{ dictionaryKey }} on the board
+#define DISTORTOS_BOARD_{{ dictionaryKey | upper }}_COUNT	(
+{%- for key, value in dictionary[dictionaryKey].items() if value is mapping %}
+{% if loop.first == False %}{{ '\t\t' }}{% endif -%}
+DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLED
+{%- if loop.last == False %} + \{% else %}){% endif %}{{ '' }}
+{% endfor %}
+
+#if defined(DISTORTOS_BOARD_{{ dictionaryKey | upper }}_ENABLE) && {# remove whitespace -#}
+DISTORTOS_BOARD_{{ dictionaryKey | upper }}_COUNT != 0
+
+namespace distortos
+{
+
+namespace chip
+{
+
+class ChipInputPin;
+
+}	// namespace chip
+
+namespace board
+{
+
+/// count of {{ dictionaryKey }} on the board
+constexpr size_t {{ dictionaryKey }}Count {DISTORTOS_BOARD_{{ dictionaryKey | upper }}_COUNT};
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| indexes of {{ dictionaryKey }}
++---------------------------------------------------------------------------------------------------------------------*/
+
+enum
+{
+{% for key, value in dictionary[dictionaryKey].items() if value is mapping %}
+#ifdef DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+		/// index of {{ key -}}
+		{% if 'alternative-names' in value %} ({{ value['alternative-names'] | join(', ') }}){% endif -%}
+		{{ '' }} from {{ dictionaryKey }}
+		{{ dictionaryKey }}{{ key }}Index,
+#endif	// def DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+{% endfor %}
+};
+{% for key, value in dictionary[dictionaryKey].items() if value is mapping and 'alternative-names' in value %}
+{% set outerLoop = loop %}
+{% for alternativeName in value['alternative-names'] %}
+{% if outerLoop.first == True and loop.first == True %}
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| alternative indexes of {{ dictionaryKey }}
++---------------------------------------------------------------------------------------------------------------------*/
+{% endif%}
+{% if loop.first == True %}
+
+#ifdef DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+{% endif %}
+
+/// alternative index of {{ key }} ({{ alternativeName }}) from {{ dictionaryKey }}
+constexpr size_t {{ dictionaryKey }}{{ alternativeName }}Index {{ '{' }}{{ dictionaryKey }}{{ key }}Index};
+{% if loop.last == True %}
+
+#endif	// def DISTORTOS_BOARD_{{ dictionaryKey | upper }}_{{ key | upper }}_ENABLE
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| indexed access to {{ dictionaryKey }} objects
++---------------------------------------------------------------------------------------------------------------------*/
+
+/// array with all {{ dictionaryKey }} objects
+extern const chip::ChipInputPin {{ dictionaryKey }}[{{ dictionaryKey }}Count];
+
+}	// namespace board
+
+}	// namespace distortos
+
+#endif	// defined(DISTORTOS_BOARD_{{ dictionaryKey | upper }}_ENABLE) && {# remove whitespace -#}
+DISTORTOS_BOARD_{{ dictionaryKey | upper }}_COUNT != 0
+
+#endif	// {{ includeGuard }}

@@ -1,0 +1,63 @@
+#
+# file: ST_STM32F4DISCOVERY.yaml
+#
+# author: Copyright (C) 2017-2018 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+# distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+$extends:
+- 'source/chip/STM32/STM32F4/chipYaml/ST_STM32F407VG.yaml'
+board:
+  compatible:
+  - ST,STM32F4DISCOVERY
+  model: STMicroelectronics STM32F4DISCOVERY
+chip:
+  VDD: !Reference {label: VDD}
+buttons:
+  compatible:
+  - GPIO-inputs
+  B1:
+    GPIO:
+      port: !Reference {label: GPIOA}
+      pin: 0
+    alternative-names:
+    - User
+leds:
+  compatible:
+  - GPIO-outputs
+  Ld3:
+    GPIO:
+      port: !Reference {label: GPIOD}
+      pin: 13
+    alternative-names:
+    - Orange
+  Ld4:
+    GPIO:
+      port: !Reference {label: GPIOD}
+      pin: 12
+    alternative-names:
+    - Green
+  Ld5:
+    GPIO:
+      port: !Reference {label: GPIOD}
+      pin: 14
+    alternative-names:
+    - Red
+  Ld6:
+    GPIO:
+      port: !Reference {label: GPIOD}
+      pin: 15
+    alternative-names:
+    - Blue
+regulators:
+  VDD:
+    compatible:
+    - fixed-regulator
+    always-on: true
+    output-voltage: 3.0
+    $labels:
+    - VDD
+!Reference {label: HSE}:
+  frequency: 8000000

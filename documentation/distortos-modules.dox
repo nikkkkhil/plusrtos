@@ -1,0 +1,66 @@
+/**
+ * \file
+ * \brief documentation of distortos modules
+ *
+ * \author Copyright (C) 2015-2018 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+ *
+ * \par License
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+ * distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * \defgroup clocks Clocks
+ * \brief Clocks-related API of distortos
+ *
+ * \defgroup devices Device drivers
+ * \brief Device drivers provided by distortos
+ *
+ * \defgroup softwareTimers Software Timers
+ * \brief Software Timers API of distortos
+ *
+ * \defgroup statistics Statistics
+ * \brief API of distortos' statistics
+ *
+ * \defgroup synchronization Synchronization
+ * \brief Synchronization-related API of distortos
+ *
+ * \{
+ *
+ * \defgroup queues Queues
+ * \brief Queues-related synchronization API of distortos
+ *
+ * \defgroup signals Signals
+ * \brief Signals-related synchronization API of distortos
+ *
+ * \}
+ *
+ * \defgroup threads Threads
+ * \brief Threads-related API of distortos
+ *
+ * \defgroup fileSystem File System
+ * \brief File-system-related API of distortos
+ *
+ * \defgroup cApi C-API
+ * \brief C-API of distortos
+ *
+ * \{
+ *
+ * \defgroup synchronizationCApi Synchronization C-API
+ * \brief Synchronization-related C-API of distortos
+ *
+ * \{
+ *
+ * \defgroup conditionVariableCApi Condition Variable C-API
+ * \brief Condition-Variable-related C-API of distortos
+ *
+ * \defgroup mutexCApi Mutex C-API
+ * \brief Mutex-related C-API of distortos
+ *
+ * \defgroup semaphoreCApi Semaphore C-API
+ * \brief Semaphore-related C-API of distortos
+ *
+ * \}
+ *
+ * \}
+ */

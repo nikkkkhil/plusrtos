@@ -1,0 +1,459 @@
+/**
+ * \file
+{% set chip = dictionary['chip']['compatible'][0] %}
+ * \brief Linker script for {{ board }} ({{ chip }} chip):
+{% for key, memory in dictionary['memories'].items() if memory is mapping %}
+ * - {{ memory['size'] | filesizeformat(binary = True) }} of {{ key }} at {{ '0x%x' % memory['address'] -}}
+{% if 'virtual-address' in memory %}
+ (VMA {{ '0x%x' % memory['virtual-address'] }})
+{%- endif %}
+;
+{% endfor %}
+ *
+ * \author Copyright (C) 2014-2019 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+ *
+ * \par License
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+ * distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * \warning
+ * Automatically generated file - do not edit!
+ */
+
+#include "distortos/distortosConfiguration.h"
+
+SEARCH_DIR(.);
+OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm");
+OUTPUT_ARCH(arm);
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| stacks sizes
++---------------------------------------------------------------------------------------------------------------------*/
+
+__main_stack_size = ALIGN(DISTORTOS_ARCHITECTURE_MAIN_STACK_SIZE, DISTORTOS_ARCHITECTURE_STACK_ALIGNMENT);
+
+__process_stack_size = ALIGN(DISTORTOS_MAIN_THREAD_STACK_SIZE, DISTORTOS_ARCHITECTURE_STACK_ALIGNMENT) +
+		ALIGN(DISTORTOS_STACK_GUARD_SIZE, DISTORTOS_ARCHITECTURE_STACK_ALIGNMENT);
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| available memories
++---------------------------------------------------------------------------------------------------------------------*/
+
+MEMORY
+{
+{% for key, memory in dictionary['memories'].items() if memory is mapping %}
+	{{ key }} : org = {{ '0x%x' % memory['address'] }}, len = {{ memory['size'] }}
+{% if 'virtual-address' in memory %}
+	{{ key }}Vma : org = {{ '0x%x' % memory['virtual-address'] }}, len = {{ memory['size'] }}
+{% endif %}
+{% endfor %}
+}
+{% for key, memory in dictionary['memories'].items() if memory is mapping %}
+
+__{{ key }}_start = ORIGIN({{ key }});
+__{{ key }}_size = LENGTH({{ key }});
+__{{ key }}_end = __{{ key }}_start + __{{ key }}_size;
+{% if 'virtual-address' in memory %}
+
+__{{ key }}Vma_start = ORIGIN({{ key }}Vma);
+__{{ key }}Vma_size = LENGTH({{ key }}Vma);
+__{{ key }}Vma_end = __{{ key }}Vma_start + __{{ key }}Vma_size;
+{% endif %}
+{% endfor %}
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| entry point
++---------------------------------------------------------------------------------------------------------------------*/
+
+ENTRY(Reset_Handler);
+
+/*---------------------------------------------------------------------------------------------------------------------+
+| put data in sections
++---------------------------------------------------------------------------------------------------------------------*/
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-flash' in memory['compatible'] and
+		'.text.vectorTable' in memory.get('sections', ['.text.vectorTable']) %}
+
+#ifdef DISTORTOS_LD_TEXT_VECTOR_TABLE_REGION_{{ key | upper }}
+REGION_ALIAS("textVectorTableVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("textVectorTableLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_TEXT_VECTOR_TABLE_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-flash' in memory['compatible'] and '.text' in memory.get('sections', ['.text']) %}
+
+#ifdef DISTORTOS_LD_TEXT_REGION_{{ key | upper }}
+REGION_ALIAS("textVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("textLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_TEXT_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-flash' in memory['compatible'] and '.ARM.exidx' in memory.get('sections', ['.ARM.exidx']) %}
+
+#ifdef DISTORTOS_LD_ARM_EXIDX_REGION_{{ key | upper }}
+REGION_ALIAS("armExidxVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("armExidxLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_ARM_EXIDX_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.main_stack' in memory.get('sections', ['.main_stack']) %}
+
+#ifdef DISTORTOS_LD_MAIN_STACK_REGION_{{ key | upper }}
+REGION_ALIAS("mainStackVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("mainStackLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_MAIN_STACK_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.bss' in memory.get('sections', ['.bss']) %}
+
+#ifdef DISTORTOS_LD_BSS_REGION_{{ key | upper }}
+REGION_ALIAS("bssVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("bssLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_BSS_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.data' in memory.get('sections', ['.data']) %}
+
+#ifdef DISTORTOS_LD_DATA_VMA_REGION_{{ key | upper }}
+REGION_ALIAS("dataVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+#endif	/* DISTORTOS_LD_DATA_VMA_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-flash' in memory['compatible'] and '.data' in memory.get('sections', ['.data']) %}
+
+#ifdef DISTORTOS_LD_DATA_LMA_REGION_{{ key | upper }}
+REGION_ALIAS("dataLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_DATA_LMA_REGION_{{ key | upper }} */
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.noinit' in memory.get('sections', ['.noinit']) %}
+
+#ifdef DISTORTOS_LD_NOINIT_REGION_{{ key | upper }}
+REGION_ALIAS("noinitVmaRegion", {{ key }}{% if 'virtual-address' in memory %}Vma{% endif %});
+REGION_ALIAS("noinitLmaRegion", {{ key }});
+#endif	/* DISTORTOS_LD_NOINIT_REGION_{{ key | upper }} */
+{% endfor %}
+{% for ramKey, ramMemory in dictionary['memories'].items() if ramMemory is mapping and
+		'on-chip-RAM' in ramMemory['compatible'] and
+		'.{}.data'.format(ramKey) in ramMemory.get('sections', ['.{}.data'.format(ramKey)]) %}
+{% for romKey, romMemory in dictionary['memories'].items() if romMemory is mapping and
+		'on-chip-flash' in romMemory['compatible'] and
+		'.{}.data'.format(ramKey) in ramMemory.get('sections', ['.{}.data'.format(ramKey)]) %}
+
+#ifdef DISTORTOS_LD_{{ ramKey | upper }}_DATA_LMA_REGION_{{ romKey | upper }}
+REGION_ALIAS("{{ ramKey }}DataLmaRegion", {{ romKey }});
+#endif	/* DISTORTOS_LD_{{ ramKey | upper }}_DATA_LMA_REGION_{{ romKey | upper }} */
+{% endfor %}
+{% endfor %}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.process_stack' in memory.get('sections', ['.process_stack']) %}
+
+#ifdef DISTORTOS_LD_PROCESS_STACK_REGION_{{ key | upper }}
+__process_stack_end = __{{ key }}_end / 8 * 8;
+#endif	/* def DISTORTOS_LD_PROCESS_STACK_REGION_{{ key | upper }} */
+{% endfor %}
+
+__process_stack_start = (__process_stack_end - __process_stack_size) / 8 * 8;
+
+SECTIONS
+{
+	.text.vectorTable : ALIGN_WITH_INPUT
+	{
+		__text_vectorTable_start = .;
+
+		KEEP(*(.vectorTable));
+
+		__text_vectorTable_end = .;
+	} > textVectorTableVmaRegion AT > textVectorTableLmaRegion
+
+	.text : ALIGN_WITH_INPUT
+	{
+		__text_start = .;
+
+		*(.text.unlikely .text.*_unlikely .text.unlikely.*);
+		*(.text.exit .text.exit.*);
+		*(.text.startup .text.startup.*);
+		*(.text.hot .text.hot.*);
+		*(.text .stub .text.* .gnu.linkonce.t.*);
+		*(.gnu.warning);
+		*(.glue_7t);
+		*(.glue_7);
+		*(.vfp11_veneer);
+		*(.v4_bx);
+		*(.rodata .rodata.* .gnu.linkonce.r.*);
+		*(.ARM.extab* .gnu.linkonce.armextab.*);
+		*(.eh_frame_hdr);
+		*(.eh_frame_entry .eh_frame_entry.*);
+		KEEP(*(.eh_frame));
+		*(.eh_frame.*);
+		*(.gcc_except_table .gcc_except_table.*);
+		*(.gnu_extab*);
+
+		/* sub-section: data_initializers */
+
+		. = ALIGN(4);
+		__data_initializers_start = .;
+
+		LONG(__data_init_start); LONG(__data_start); LONG(__data_end);
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and
+		'.{}.data'.format(key) in memory.get('sections', ['.{}.data'.format(key)]) %}
+		LONG(__{{ key }}_data_init_start); LONG(__{{ key }}_data_start); LONG(__{{ key }}_data_end);
+{% endfor %}
+
+		. = ALIGN(4);
+		__data_initializers_end = .;
+
+		/* end of sub-section: data_initializers */
+
+		/* sub-section: bss_initializers */
+
+		. = ALIGN(4);
+		__bss_initializers_start = .;
+
+		LONG(0); LONG(__bss_start); LONG(__bss_end);
+		LONG(0xed419f25); LONG(__main_stack_start); LONG(__main_stack_end);
+		LONG(0xed419f25); LONG(__process_stack_start); LONG(__process_stack_end);
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and
+		'.{}.bss'.format(key) in memory.get('sections', ['.{}.bss'.format(key)]) %}
+		LONG(0); LONG(__{{ key }}_bss_start); LONG(__{{ key }}_bss_end);
+{% endfor %}
+
+		. = ALIGN(4);
+		__bss_initializers_end = .;
+
+		/* end of sub-section: bss_initializers */
+
+		/* sub-sections: low_level_preinitializers, low_level_initializers */
+
+		. = ALIGN(4);
+		__low_level_preinitializers_start = .;
+
+		KEEP(*(SORT(.low_level_preinitializers.*)));
+
+		. = ALIGN(4);
+		__low_level_preinitializers_end = .;
+
+		. = ALIGN(4);
+		__low_level_initializers_start = .;
+
+		KEEP(*(SORT(.low_level_initializers.*)));
+
+		. = ALIGN(4);
+		__low_level_initializers_end = .;
+
+		/* end of sub-sections: low_level_preinitializers, low_level_initializers */
+
+		/* sub-sections: init, preinit_array, init_array and fini_array */
+
+		KEEP(*(SORT_NONE(.init)));
+
+		__preinit_array_start = .;
+
+		KEEP(*(.preinit_array));
+
+		__preinit_array_end = .;
+
+		__init_array_start = .;
+
+		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)));
+		KEEP(*(.init_array));
+
+		__init_array_end = .;
+
+		KEEP(*(SORT_NONE(.fini)));
+
+#if DISTORTOS_STATIC_DESTRUCTORS_ENABLE == 1
+
+		__fini_array_start = .;
+
+		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)));
+		KEEP(*(.fini_array));
+
+		__fini_array_end = .;
+
+#endif	/* DISTORTOS_STATIC_DESTRUCTORS_ENABLE == 1 */
+
+		/* end of sub-sections: init, preinit_array, init_array and fini_array */
+
+		__text_end = .;
+	} > textVmaRegion AT > textLmaRegion
+
+	.ARM.exidx : ALIGN_WITH_INPUT
+	{
+		__exidx_start = .;
+
+		*(.ARM.exidx* .gnu.linkonce.armexidx.*);	/* index entries for section unwinding */
+
+		__exidx_end = .;
+	} > armExidxVmaRegion AT > armExidxLmaRegion
+
+	.main_stack :
+	{
+		. = ALIGN(8);
+		__main_stack_start = .;
+
+		. += __main_stack_size;
+
+		. = ALIGN(8);
+		__main_stack_end = .;
+	} > mainStackVmaRegion AT > mainStackLmaRegion
+
+	.bss (NOLOAD) :
+	{
+		. = ALIGN(4);
+		__bss_start = .;
+
+		*(.bss .bss.* .gnu.linkonce.b.*);
+		*(COMMON);
+
+		. = ALIGN(4);
+		__bss_end = .;
+	} > bssVmaRegion AT > bssLmaRegion
+
+	.data :
+	{
+		. = ALIGN(4);
+		__data_init_start = LOADADDR(.data);
+		__data_start = .;
+
+		*(.data .data.* .gnu.linkonce.d.*);
+
+		. = ALIGN(4);
+		__data_end = .;
+	} > dataVmaRegion AT > dataLmaRegion
+
+	.noinit (NOLOAD) :
+	{
+		. = ALIGN(4);
+		__noinit_start = .;
+
+		*(.noinit);
+
+		. = ALIGN(4);
+		__noinit_end = .;
+	} > noinitVmaRegion AT > noinitLmaRegion
+{% for key, memory in dictionary['memories'].items() if memory is mapping and 'on-chip-RAM' in memory['compatible'] %}
+{% if '.{}.bss'.format(key) in memory.get('sections', ['.{}.bss'.format(key)]) %}
+
+	.{{ key }}.bss (NOLOAD) :
+	{
+		. = ALIGN(4);
+		__{{ key }}_bss_start = .;
+
+		*(.{{ key }}.bss);
+
+		. = ALIGN(4);
+		__{{ key }}_bss_end = .;
+	} > {{ key }} AT > {{ key }}
+{% endif %}
+{% if '.{}.data'.format(key) in memory.get('sections', ['.{}.data'.format(key)]) %}
+
+	.{{ key }}.data :
+	{
+		. = ALIGN(4);
+		__{{ key }}_data_init_start = LOADADDR(.{{ key }}.data);
+		__{{ key }}_data_start = .;
+
+		*(.{{ key }}.data);
+
+		. = ALIGN(4);
+		__{{ key }}_data_end = .;
+	} > {{ key }} AT > {{ key }}DataLmaRegion
+{% endif %}
+{% if '.{}.noinit'.format(key) in memory.get('sections', ['.{}.noinit'.format(key)]) %}
+
+	.{{ key }}.noinit (NOLOAD) :
+	{
+		. = ALIGN(4);
+		__{{ key }}_noinit_start = .;
+
+		*(.{{ key }}.noinit);
+
+		. = ALIGN(4);
+		__{{ key }}_noinit_end = .;
+	} > {{ key }} AT > {{ key }}
+{% endif %}
+{% endfor %}
+
+	.process_stack __process_stack_start : AT(__process_stack_start)
+	{
+		. += __process_stack_size;
+	}
+
+	/* Stabs debugging sections. */
+	.stab 0 : { *(.stab); }
+	.stabstr 0 : { *(.stabstr); }
+	.stab.excl 0 : { *(.stab.excl); }
+	.stab.exclstr 0 : { *(.stab.exclstr); }
+	.stab.index 0 : { *(.stab.index); }
+	.stab.indexstr 0 : { *(.stab.indexstr); }
+	.comment 0 : { *(.comment); }
+	/* DWARF debug sections. */
+	/* Symbols in the DWARF debugging sections are relative to the beginning of the section so we begin them at 0. */
+	/* DWARF 1 */
+	.debug 0 : { *(.debug); }
+	.line 0 : { *(.line); }
+	/* GNU DWARF 1 extensions */
+	.debug_srcinfo 0 : { *(.debug_srcinfo); }
+	.debug_sfnames 0 : { *(.debug_sfnames); }
+	/* DWARF 1.1 and DWARF 2 */
+	.debug_aranges 0 : { *(.debug_aranges); }
+	.debug_pubnames 0 : { *(.debug_pubnames); }
+	/* DWARF 2 */
+	.debug_info 0 : { *(.debug_info .gnu.linkonce.wi.*); }
+	.debug_abbrev 0 : { *(.debug_abbrev); }
+	.debug_line 0 : { *(.debug_line .debug_line.* .debug_line_end); }
+	.debug_frame 0 : { *(.debug_frame); }
+	.debug_str 0 : { *(.debug_str); }
+	.debug_loc 0 : { *(.debug_loc); }
+	.debug_macinfo 0 : { *(.debug_macinfo); }
+	/* SGI/MIPS DWARF 2 extensions */
+	.debug_weaknames 0 : { *(.debug_weaknames); }
+	.debug_funcnames 0 : { *(.debug_funcnames); }
+	.debug_typenames 0 : { *(.debug_typenames); }
+	.debug_varnames 0 : { *(.debug_varnames); }
+	/* DWARF 3 */
+	.debug_pubtypes 0 : { *(.debug_pubtypes); }
+	.debug_ranges 0 : { *(.debug_ranges); }
+	/* DWARF Extension. */
+	.debug_macro 0 : { *(.debug_macro); }
+	.debug_addr 0 : { *(.debug_addr); }
+	.ARM.attributes 0 : { KEEP(*(.ARM.attributes)); KEEP(*(.gnu.attributes)); }
+	.note.gnu.arm.ident	0 : { KEEP(*(.note.gnu.arm.ident)); }
+	/DISCARD/ : { *(.note.GNU-stack); *(.gnu_debuglink); *(.gnu.lto_*); }
+}
+{% for key, memory in dictionary['memories'].items() if memory is mapping and
+		'on-chip-RAM' in memory['compatible'] and '.heap' in memory.get('sections', ['.heap']) %}
+
+#ifdef DISTORTOS_LD_HEAP_REGION_{{ key | upper }}
+__heap_start = ALIGN(__{{ key }}_noinit_end, 8);
+#ifdef DISTORTOS_LD_PROCESS_STACK_REGION_{{ key | upper }}
+__heap_end = __process_stack_start / 8 * 8;
+#else	/* !def DISTORTOS_LD_PROCESS_STACK_REGION_{{ key | upper }} */
+__heap_end = __{{ key }}_end / 8 * 8;
+#endif	/* !def DISTORTOS_LD_PROCESS_STACK_REGION_{{ key | upper }} */
+#endif	/* def DISTORTOS_LD_HEAP_REGION_{{ key | upper }} */
+{% endfor %}
+
+__text_vectorTable_size = SIZEOF(.text.vectorTable);
+__text_size = SIZEOF(.text);
+__exidx_size = SIZEOF(.ARM.exidx);
+__bss_size = SIZEOF(.bss);
+__data_size = SIZEOF(.data);
+__noinit_size = SIZEOF(.noinit);
+{% for key, memory in dictionary['memories'].items() if memory is mapping and 'on-chip-RAM' in memory['compatible'] %}
+{% if '.{}.bss'.format(key) in memory.get('sections', ['.{}.bss'.format(key)]) %}
+__{{ key }}_bss_size = SIZEOF(.{{ key }}.bss);
+{% endif %}
+{% if '.{}.data'.format(key) in memory.get('sections', ['.{}.data'.format(key)]) %}
+__{{ key }}_data_size = SIZEOF(.{{ key }}.data);
+{% endif %}
+{% if '.{}.noinit'.format(key) in memory.get('sections', ['.{}.noinit'.format(key)]) %}
+__{{ key }}_noinit_size = SIZEOF(.{{ key }}.noinit);
+{% endif %}
+{% endfor %}
+
+__bss_start__ = __bss_start;
+__bss_end__ = __bss_end;

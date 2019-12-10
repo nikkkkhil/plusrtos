@@ -1,0 +1,38 @@
+#
+# file: {{ metadata[metadataIndex][2] }}
+#
+# author: Copyright (C) 2018-2019 Kamil Szczygiel http://www.distortec.com http://www.freddiechopin.info
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+# distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Automatically generated file - do not edit!
+#
+
+distortosSetFixedConfiguration(BOOLEAN
+		DISTORTOS_BOARD_{{ board | sanitize('[^0-9A-Za-z]') }}
+		ON)
+
+distortosSetFixedConfiguration(STRING
+		DISTORTOS_BOARD
+		"{{ board }}")
+{% for metadataRow in metadata if metadataRow[2].endswith('.cpp') %}
+{% if loop.first == True %}
+
+target_include_directories(distortos PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}/include)
+
+target_sources(distortos PRIVATE
+{% endif %}
+		${CMAKE_CURRENT_LIST_DIR}/{{ metadataRow[2] }}{% if loop.last == True %}){% endif %}{{ '' }}
+{% endfor %}
+
+doxygen(INPUT ${CMAKE_CURRENT_LIST_DIR} INCLUDE_PATH ${CMAKE_CURRENT_LIST_DIR}/include)
+
+{% for metadataRow in metadata if metadataRow[2].startswith('cmake/') and metadataRow[2].endswith('.cmake') %}
+include(${CMAKE_CURRENT_LIST_DIR}/{{ metadataRow[2] }})
+{% endfor %}
+
+include(${CMAKE_CURRENT_LIST_DIR}/distortos-board-sources.extension.cmake OPTIONAL)
+
+set(DISTORTOS_BOARD_VERSION 13)
